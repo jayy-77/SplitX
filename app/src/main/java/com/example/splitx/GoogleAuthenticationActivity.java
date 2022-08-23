@@ -21,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -40,6 +41,7 @@ public class GoogleAuthenticationActivity extends AppCompatActivity {
     private final static int RC_SIGN_IN = 123;
     private FirebaseAuth mAuth;
     private EditText upi_et;
+    private SignInButton googleButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference userRef = null;
     @Override
@@ -57,21 +59,19 @@ public class GoogleAuthenticationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_google_authentication);
 
+        googleButton = findViewById(R.id.googleAuthBtn);
 
         mAuth = FirebaseAuth.getInstance();
         createRequest();
 
         upi_et = findViewById(R.id.upi_et);
 
-        findViewById(R.id.googleAuthBtn).setOnClickListener(new View.OnClickListener() {
+        googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                     signIn();
-
             }
         });
     }
