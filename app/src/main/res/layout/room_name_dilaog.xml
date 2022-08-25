@@ -5,6 +5,7 @@
     android:backgroundTint="#b2fab4"
     android:layout_height="match_parent">
 <EditText
+    android:id="@+id/roomNameEt"
     android:background="@drawable/room_et_drawable"
     android:layout_width="match_parent"
     android:layout_margin="10dp"

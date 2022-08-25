@@ -43,7 +43,7 @@ public class GoogleAuthenticationActivity extends AppCompatActivity {
     private EditText upi_et;
     private SignInButton googleButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference userRef = null;
+    private DocumentReference userRef =  null;
     @Override
     protected void onStart() {
         super.onStart();
