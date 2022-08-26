@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
@@ -50,7 +51,10 @@ public class CardsFragment extends Fragment {
         View v =  inflater.inflate(R.layout.fragment_cards, container, false);
          View v2 = LayoutInflater.from(getContext()).inflate(R.layout.room_name_dilaog, null);
 
+
+
         createRoom = v.findViewById(R.id.createRoom);
+
         createRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,10 +71,20 @@ public class CardsFragment extends Fragment {
                                 db.collection("Rooms").document(roomId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        Map<String, Object> docData = new HashMap<>();
-                                        docData.put("joinedRoomId", Arrays.asList(roomId));
-//                                       JoinedRoomObject obj2 = new JoinedRoomObject(joinedRoom);
-                                        db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("JoinedRooms").document("rooms").set(docData);
+                                       List<String> joinedRooms = new ArrayList<>();
+                                       joinedRooms.add(roomId);
+                                       JoinedRoomObject obj2 = new JoinedRoomObject(joinedRooms);
+                                        db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("JoinedRooms").limit(1).get()
+                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                        if(queryDocumentSnapshots.getDocuments().size()>0){
+                                                            db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("JoinedRooms").document("rooms").update("joinedRooms",FieldValue.arrayUnion(roomId));
+                                                        }else{
+                                                            db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("JoinedRooms").document("rooms").set(obj2);
+                                                        }
+                                                    }
+                                                });
                                         Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Room created successfully", Snackbar.LENGTH_LONG);
                                         snackBar.setBackgroundTint(Color.parseColor("#b2fab4"));
                                         snackBar.setTextColor(Color.BLACK);

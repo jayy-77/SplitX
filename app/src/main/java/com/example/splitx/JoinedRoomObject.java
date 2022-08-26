@@ -1,23 +1,23 @@
 package com.example.splitx;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JoinedRoomObject {
-    public ArrayList<String> getJoinedRoomId() {
-        return joinedRoomId;
+    public List<String> getJoinedRooms() {
+        return joinedRooms;
     }
 
-    public void setJoinedRoomId(ArrayList<String> joinedRoomId) {
-        this.joinedRoomId = joinedRoomId;
+    public void setJoinedRooms(List<String> joinedRooms) {
+        this.joinedRooms = joinedRooms;
     }
 
-    ArrayList<String> joinedRoomId;
-   public  JoinedRoomObject(List<String> joinedRoom){
+    List<String> joinedRooms = new ArrayList<>();
+    public JoinedRoomObject(List<String> joinedRooms){
+        this.joinedRooms = joinedRooms;
+    }
+    public JoinedRoomObject(){
 
     }
-    public JoinedRoomObject(ArrayList<String> joinedRoomId){
-       this.joinedRoomId = joinedRoomId;
-    }
-
 }
