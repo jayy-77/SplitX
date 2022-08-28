@@ -140,7 +140,6 @@ public class CardsFragment extends Fragment {
                 roomNameEt.setLayoutParams(new ViewGroup.LayoutParams(100, 200));
 
 
-//testing
             MaterialAlertDialogBuilder obj =  new MaterialAlertDialogBuilder(getContext(),R.style.ThemeOverlay_App_MaterialAlertDialog)
                         .setTitle("New Room")
                         .setView(roomNameEt)
