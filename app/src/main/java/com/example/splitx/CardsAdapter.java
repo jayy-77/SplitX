@@ -48,10 +48,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder>{
         holder.cards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RoomFragment roomFragment = new RoomFragment();
-                ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragContainer,roomFragment)
-                        .commit();
+
             }
         });
     }

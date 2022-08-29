@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationItemView = findViewById(R.id.bottom_navigation);
 
-
+    bottomNavigationItemView.setItemActiveIndicatorColor(getColorStateList(R.color.dialogBoxColor));
         bottomNavigationItemView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

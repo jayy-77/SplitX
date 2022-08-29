@@ -7,11 +7,11 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="$USER_HOME$/.android/avd/Nexus_5X_API_27.avd" />
+            <value value="$USER_HOME$/.android/avd/flutter_emulator.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2022-08-29T15:41:22.756115Z" />
+    <timeTargetWasSelectedWithDropDown value="2022-08-29T17:38:36.411296Z" />
   </component>
 </project>
