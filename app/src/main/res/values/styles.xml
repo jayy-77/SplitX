@@ -6,14 +6,12 @@
     </style>
 
     <style name="MaterialAlertDialog.App.Title.Text" parent="MaterialAlertDialog.Material3.Title.Text">
-        <item name="android:textColor">#b2fab4</item>
-    </style>
-    <style name="MaterialAlertDialog.App.Title.Icon" parent="MaterialAlertDialog.Material3.Title.Icon">
-        <item name="android:textColor">#b2fab4</item>
+        <item name="android:textColor">@color/mainSplitxColor</item>
     </style>
 
+
     <style name="Widget.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
-        <item name="android:textColor">#b2fab4</item>
+        <item name="android:textColor">@color/mainSplitxColor</item>
     </style>
 
     <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">

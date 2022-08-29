@@ -59,15 +59,11 @@ public class CardsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_cards, container, false);
-
         recyclerView = (RecyclerView) v.findViewById(R.id.cardRecycler);
         recyclerView.setHasFixedSize(true);
         linearLayout = new LinearLayoutManager(getContext());
@@ -84,13 +80,17 @@ public class CardsFragment extends Fragment {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                 for(QueryDocumentSnapshot documentSnapshots : queryDocumentSnapshots){
-                                    if(myJoinedRooms.size()>0) {
-                                        for (int i = 0; i < myJoinedRooms.size(); i++) {
-                                            if (myJoinedRooms.get(i).equals(documentSnapshots.getId())) {
-                                                RoomObject roomObject = documentSnapshots.toObject(RoomObject.class);
-                                                roomObjects.add(roomObject);
+                                    try {
+                                        if (myJoinedRooms.size() > 0) {
+                                            for (int i = 0; i < myJoinedRooms.size(); i++) {
+                                                if (myJoinedRooms.get(i).equals(documentSnapshots.getId())) {
+                                                    RoomObject roomObject = documentSnapshots.toObject(RoomObject.class);
+                                                    roomObjects.add(roomObject);
+                                                }
                                             }
                                         }
+                                    }catch (Exception e){
+
                                     }
                                 }
                                 cardsAdapter = new CardsAdapter(roomObjects,getContext());
@@ -106,7 +106,7 @@ public class CardsFragment extends Fragment {
                     }
                 });
 
-
+//
 //        db.collection("Rooms").addSnapshotListener(new EventListener<QuerySnapshot>() {
 //            @Override
 //            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
@@ -140,14 +140,17 @@ public class CardsFragment extends Fragment {
                 roomNameEt.setLayoutParams(new ViewGroup.LayoutParams(100, 200));
 
 
-            MaterialAlertDialogBuilder obj =  new MaterialAlertDialogBuilder(getContext(),R.style.ThemeOverlay_App_MaterialAlertDialog)
-                        .setTitle("New Room")
-                        .setView(roomNameEt)
-                        .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            MaterialAlertDialogBuilder obj =  new MaterialAlertDialogBuilder(getContext(),R.style.ThemeOverlay_App_MaterialAlertDialog);
+                View mView = getLayoutInflater().inflate(R.layout.room_name_dilaog,null);
+                final EditText txt_inputText = (EditText)mView.findViewById(R.id.roomNameEt);
+
+                obj.setTitle("New Room");
+                        obj.setView(mView);
+                        obj.setPositiveButton("Create", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String roomId = String.valueOf((int)(Math.random()*(100000-10000+1)+10000));
-                                RoomObject obj = new RoomObject(roomId,roomNameEt.getText().toString(),"1","0");
+                                RoomObject obj = new RoomObject(roomId,txt_inputText.getText().toString(),"1","0");
                                 db.collection("Rooms").document(roomId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
@@ -183,6 +186,10 @@ public class CardsFragment extends Fragment {
                                         snackBar.setBackgroundTint(Color.parseColor("#b2fab4"));
                                         snackBar.setTextColor(Color.BLACK);
                                         snackBar.show();
+                                            CardsFragment cardsFragment = new CardsFragment();
+                                            getActivity().getSupportFragmentManager().beginTransaction()
+                                                .replace(R.id.fragContainer,cardsFragment)
+                                                .commit();
                                     }
                                 })
                                         .addOnFailureListener(new OnFailureListener() {

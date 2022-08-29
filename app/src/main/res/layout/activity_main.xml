@@ -31,8 +31,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:itemBackground="@color/material_dynamic_secondary0"
-            app:itemIconTint="#b2fab4"
-            app:itemTextColor="#b2fab4"
+            app:itemIconTint="@color/mainSplitxColor"
+            app:itemTextColor="@color/mainSplitxColor"
             app:menu="@menu/bottomenu" />
 
     </LinearLayout>

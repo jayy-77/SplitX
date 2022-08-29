@@ -1,21 +1,18 @@
 package com.example.splitx;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,25 +27,22 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
 
 public class GoogleAuthenticationActivity extends AppCompatActivity {
 
     private GoogleSignInClient googleSignInClient;
-    private final static int RC_SIGN_IN = 123;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth auth;
     private EditText upi_et;
     private SignInButton googleButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference userRef =  null;
     @Override
     protected void onStart() {
         super.onStart();
+        auth = FirebaseAuth.getInstance();
 
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
@@ -61,19 +55,21 @@ public class GoogleAuthenticationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_authentication);
 
-        googleButton = findViewById(R.id.googleAuthBtn);
+            createRequest();
 
-        mAuth = FirebaseAuth.getInstance();
-        createRequest();
+            googleButton = findViewById(R.id.googleAuthBtn);
 
-        upi_et = findViewById(R.id.upi_et);
+            auth = FirebaseAuth.getInstance();
 
-        googleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            upi_et = findViewById(R.id.upi_et);
+
+            googleButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     signIn();
-            }
-        });
+                }
+            });
+
     }
     private void createRequest() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -85,12 +81,11 @@ public class GoogleAuthenticationActivity extends AppCompatActivity {
 
     private void signIn() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
-        someActivityResultLauncher.launch(signInIntent);
+        activityResultLauncher.launch(signInIntent);
 
     }
-    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
+    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
@@ -106,16 +101,14 @@ public class GoogleAuthenticationActivity extends AppCompatActivity {
                 }
             });
 
-
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
+        auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = auth.getCurrentUser();
                             UserObject obj = new UserObject(user.getDisplayName(),user.getEmail(),upi_et.getText().toString(),user.getPhotoUrl().toString());
                              db.collection("Users").document(obj.getEmail()).set(obj);
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);

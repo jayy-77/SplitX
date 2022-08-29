@@ -1,6 +1,7 @@
 package com.example.splitx;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,24 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder>{
     private ArrayList<RoomObject> cardData = new ArrayList<>();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Context context;
 
     public CardsAdapter(ArrayList<RoomObject> cardData, Context context) {
      this.cardData = cardData;
      this.context = context;
+    }
+    public CardsAdapter(){
+
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -35,6 +45,15 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder>{
         holder.peoples.setText(cardData.get(position).getNumberOfpeople());
         holder.cards.setText(cardData.get(position).getNumberOfCards());
         holder.numberOfPeopleTV.setText(cardData.get(position).getNumberOfpeople()+""+"+");
+        holder.cards.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RoomFragment roomFragment = new RoomFragment();
+                ((MainActivity)context).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragContainer,roomFragment)
+                        .commit();
+            }
+        });
     }
 
 
