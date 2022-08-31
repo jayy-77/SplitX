@@ -1,6 +1,7 @@
 package com.example.splitx;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,10 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder>{
         holder.cards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(context,RoomActivity.class);
+                intent.putExtra("roomName",cardData.get(position).getRoomName());
+                intent.putExtra("roomId",cardData.get(position).getRoomId());
+                context.startActivity(intent);
             }
         });
     }

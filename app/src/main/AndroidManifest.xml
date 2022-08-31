@@ -10,18 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SplitX">
         <activity
+            android:name=".RoomActivity"
+            android:exported="false" />
+        <activity
             android:name=".GoogleAuthenticationActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
     </application>
 
 </manifest>
