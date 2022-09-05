@@ -20,6 +20,7 @@ import com.google.android.material.navigation.NavigationBarItemView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,12 +31,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private Fragment CardsFragment;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String currentUser;
     private BottomNavigationView bottomNavigationItemView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         bottomNavigationItemView = findViewById(R.id.bottom_navigation);
 
     bottomNavigationItemView.setItemActiveIndicatorColor(getColorStateList(R.color.dialogBoxColor));
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         final EditText txt_inputText = (EditText)mView.findViewById(R.id.roomNameEt);
                         materialAlertDialogBuilder.setTitle("Join Room");
                         materialAlertDialogBuilder.setView(mView);
+                        txt_inputText.setHint("Room Id");
                         materialAlertDialogBuilder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -77,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
                                                         }
                                                     }
                                                 });
+                                              db.collection("Users").document(currentUser).get()
+                                                      .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                          @Override
+                                                          public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                              db.collection("Rooms").document(txt_inputText.getText().toString()).update("userPhoto",FieldValue.arrayUnion(documentSnapshot.get("profileUri").toString()));
+                                                          }
+                                                      });
+
                                                 Snackbar snackBar = Snackbar.make(findViewById(android.R.id.content), "Room joined successfully", Snackbar.LENGTH_LONG);
                                                 snackBar.setBackgroundTint(Color.parseColor("#b2fab4"));
                                                 snackBar.setTextColor(Color.BLACK);

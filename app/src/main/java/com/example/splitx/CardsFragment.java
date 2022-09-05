@@ -7,13 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,23 +19,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CardsFragment extends Fragment {
     private ExtendedFloatingActionButton createRoom;
@@ -52,6 +39,7 @@ public class CardsFragment extends Fragment {
     ArrayList<RoomObject> roomObjects = new ArrayList<>();
     LinearLayoutManager linearLayout;
     RecyclerView recyclerView;
+    RoomObject roomObject2 = null;
     public CardsFragment() {
 
     }
@@ -150,23 +138,33 @@ public class CardsFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String roomId = String.valueOf((int)(Math.random()*(100000-10000+1)+10000));
-                                RoomObject obj = new RoomObject(roomId,txt_inputText.getText().toString(),"1","0");
-                                db.collection("Rooms").document(roomId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        List<String> joinedUsers = new ArrayList<>();
-                                        joinedUsers.add(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                                        DetailsObject detailsObject = new DetailsObject(joinedUsers);
-                                        db.collection("Rooms").document(roomId).collection("Details").limit(1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
-                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                if(queryDocumentSnapshots.getDocuments().size()>0){
-                                                    db.collection("Rooms").document(roomId).collection("Details").document("UserDetails").update("joinedUsers",FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
-                                                }else{
-                                                    db.collection("Rooms").document(roomId).collection("Details").document("UserDetails").set(detailsObject);
-                                                }
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                String currentUserPhoto = documentSnapshot.get("profileUri").toString();
+                                                List<String> currentUser = new ArrayList<>();
+                                                currentUser.add(currentUserPhoto);
+                                                roomObject2 = new RoomObject(roomId,txt_inputText.getText().toString(),"1","0",currentUser);
+                                                db.collection("Rooms").document(roomId).set(roomObject2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        List<String> joinedUsers = new ArrayList<>();
+                                                        joinedUsers.add(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                                        DetailsObject detailsObject = new DetailsObject(joinedUsers);
+                                                        db.collection("Rooms").document(roomId).collection("Details").limit(1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                                if(queryDocumentSnapshots.getDocuments().size()>0){
+                                                                    db.collection("Rooms").document(roomId).collection("Details").document("UserDetails").update("joinedUsers",FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+                                                                }else{
+                                                                    db.collection("Rooms").document(roomId).collection("Details").document("UserDetails").set(detailsObject);
+                                                                }
+                                                            }
+                                                        });
                                             }
                                         });
+
 
                                        List<String> joinedRooms = new ArrayList<>();
                                        joinedRooms.add(roomId);
