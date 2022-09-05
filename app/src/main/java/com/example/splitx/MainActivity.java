@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -49,35 +50,35 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.join_room:
                         MaterialAlertDialogBuilder materialAlertDialogBuilder =  new MaterialAlertDialogBuilder(MainActivity.this,R.style.ThemeOverlay_App_MaterialAlertDialog);
                         View mView = getLayoutInflater().inflate(R.layout.room_name_dilaog,null);
-                        final EditText txt_inputText = (EditText)mView.findViewById(R.id.roomNameEt);
+                        final EditText roomIdEt = (EditText)mView.findViewById(R.id.roomNameEt);
                         materialAlertDialogBuilder.setTitle("Join Room");
                         materialAlertDialogBuilder.setView(mView);
-                        txt_inputText.setHint("Room Id");
+                        roomIdEt.setHint("Room Id");
                         materialAlertDialogBuilder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 List<String> joinedRooms = new ArrayList<>();
-                                joinedRooms.add(txt_inputText.getText().toString());
+                                joinedRooms.add(roomIdEt.getText().toString());
                                 JoinedRoomObject obj2 = new JoinedRoomObject(joinedRooms);
                                 db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("JoinedRooms").limit(1).get()
                                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                             @Override
                                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                                 if(queryDocumentSnapshots.getDocuments().size()>0){
-                                                    db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("JoinedRooms").document("rooms").update("joinedRooms", FieldValue.arrayUnion(txt_inputText.getText().toString()));
+                                                    db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("JoinedRooms").document("rooms").update("joinedRooms", FieldValue.arrayUnion(roomIdEt.getText().toString()));
                                                 }else{
                                                     db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("JoinedRooms").document("rooms").set(obj2);
                                                 }
                                                 List<String> joinedUsers = new ArrayList<>();
                                                 joinedUsers.add(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                                                 DetailsObject detailsObject = new DetailsObject(joinedUsers);
-                                                db.collection("Rooms").document(txt_inputText.getText().toString()).collection("Details").limit(1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                db.collection("Rooms").document(roomIdEt.getText().toString()).collection("Details").limit(1).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                                     @Override
                                                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                                         if(queryDocumentSnapshots.getDocuments().size()>0){
-                                                            db.collection("Rooms").document(txt_inputText.getText().toString()).collection("Details").document("UserDetails").update("joinedUsers",FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+                                                            db.collection("Rooms").document(roomIdEt.getText().toString()).collection("Details").document("UserDetails").update("joinedUsers",FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
                                                         }else{
-                                                            db.collection("Rooms").document(txt_inputText.getText().toString()).collection("Details").document("UserDetails").set(detailsObject);
+                                                            db.collection("Rooms").document(roomIdEt.getText().toString()).collection("Details").document("UserDetails").set(detailsObject);
                                                         }
                                                     }
                                                 });
@@ -85,9 +86,11 @@ public class MainActivity extends AppCompatActivity {
                                                       .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                           @Override
                                                           public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                              db.collection("Rooms").document(txt_inputText.getText().toString()).update("userPhoto",FieldValue.arrayUnion(documentSnapshot.get("profileUri").toString()));
+                                                              db.collection("Rooms").document(roomIdEt.getText().toString()).update("userPhoto",FieldValue.arrayUnion(documentSnapshot.get("profileUri").toString()));
                                                           }
                                                       });
+                                                db.collection("Rooms").document(roomIdEt.getText().toString()).update("numberOfpeople",String.valueOf(FieldValue.increment(1)));
+
 
                                                 Snackbar snackBar = Snackbar.make(findViewById(android.R.id.content), "Room joined successfully", Snackbar.LENGTH_LONG);
                                                 snackBar.setBackgroundTint(Color.parseColor("#b2fab4"));
