@@ -49,7 +49,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder>{
         listSize = cardData.get(position).getUserPhoto().size();
         holder.roomName.setText(cardData.get(position).getRoomName());
         holder.roomid.setText("Id: "+cardData.get(position).getRoomId());
-        holder.peoples.setText(cardData.get(position).getNumberOfpeople());
+        holder.peoples.setText(String.valueOf(cardData.get(position).getNumberOfpeople()));
         holder.cards.setText(cardData.get(position).getNumberOfCards());
         holder.numberOfPeopleTV.setOnClickListener(new View.OnClickListener() {
             @Override
