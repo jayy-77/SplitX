@@ -89,7 +89,14 @@ public class MainActivity extends AppCompatActivity {
                                                               db.collection("Rooms").document(roomIdEt.getText().toString()).update("userPhoto",FieldValue.arrayUnion(documentSnapshot.get("profileUri").toString()));
                                                           }
                                                       });
-                                                db.collection("Rooms").document(roomIdEt.getText().toString()).update("numberOfpeople",FieldValue.increment(1));
+                                                db.collection("Rooms").document(roomIdEt.getText().toString()).get()
+                                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                               int tmp = (Integer) documentSnapshot.get("numberOfpeople");
+                                                                db.collection("Rooms").document(roomIdEt.getText().toString()).update("numberOfpeople",String.valueOf(tmp+1));
+                                                            }
+                                                        });
 
 
                                                 Snackbar snackBar = Snackbar.make(findViewById(android.R.id.content), "Room joined successfully", Snackbar.LENGTH_LONG);
