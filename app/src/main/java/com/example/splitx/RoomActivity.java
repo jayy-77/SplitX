@@ -2,17 +2,21 @@ package com.example.splitx;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 
 import com.google.android.material.appbar.MaterialToolbar;
 
 public class RoomActivity extends AppCompatActivity {
     String roomName, roomId;
+    Button splitExepenseBtn;
     MaterialToolbar topBar;
+    private Fragment SplitFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +26,7 @@ public class RoomActivity extends AppCompatActivity {
         roomName = getIntent().getStringExtra("roomName");
         roomId = getIntent().getStringExtra("roomId");
 
+        splitExepenseBtn = findViewById(R.id.splitExpenseBtn);
         topBar = findViewById(R.id.topAppBarRoomActivity);
         topBar.setTitle(roomName);
         topBar.setSubtitle(roomId);
@@ -39,6 +44,15 @@ public class RoomActivity extends AppCompatActivity {
                         return true;
                 }
                 return false;
+            }
+        });
+        splitExepenseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SplitFrag = new SplitFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragContainer,SplitFrag)
+                        .commit();
             }
         });
     }

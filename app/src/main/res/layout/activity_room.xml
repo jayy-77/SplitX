@@ -37,6 +37,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/splitExpenseBtn" />
+    <FrameLayout
+        android:elevation="10dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/fragContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+       />
+
 
     <Button
         android:id="@+id/splitExpenseBtn"

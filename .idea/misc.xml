@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.335" />
         <entry key="app/src/main/res/drawable/ic_baseline_connect_without_contact_24.xml" value="0.335" />
         <entry key="app/src/main/res/drawable/ic_baseline_credit_card_24.xml" value="0.335" />
+        <entry key="app/src/main/res/drawable/ic_baseline_currency_rupee_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_baseline_groups_24.xml" value="0.291" />
         <entry key="app/src/main/res/drawable/ic_baseline_handshake_24.xml" value="0.16" />
         <entry key="app/src/main/res/drawable/ic_baseline_history_24.xml" value="0.335" />
@@ -19,10 +20,11 @@
         <entry key="app/src/main/res/drawable/room_et_drawable.xml" value="0.291" />
         <entry key="app/src/main/res/layout/activity_google_authentication.xml" value="0.67" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_room.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_room.xml" value="0.22" />
         <entry key="app/src/main/res/layout/card_item.xml" value="0.20869565217391303" />
         <entry key="app/src/main/res/layout/fragment_cards.xml" value="0.3170289855072464" />
         <entry key="app/src/main/res/layout/fragment_room.xml" value="0.3138586956521739" />
+        <entry key="app/src/main/res/layout/fragment_split.xml" value="0.67" />
         <entry key="app/src/main/res/layout/room_name_dilaog.xml" value="0.3170289855072464" />
         <entry key="app/src/main/res/menu/bottomenu.xml" value="0.3734375" />
       </map>
