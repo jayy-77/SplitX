@@ -3,6 +3,8 @@ package com.example.splitx;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -13,7 +15,7 @@ import android.widget.Button;
 import com.google.android.material.appbar.MaterialToolbar;
 
 public class RoomActivity extends AppCompatActivity {
-    String roomName, roomId;
+    public String roomName, roomId;
     Button splitExepenseBtn;
     MaterialToolbar topBar;
     private Fragment SplitFrag;
@@ -49,11 +51,12 @@ public class RoomActivity extends AppCompatActivity {
         splitExepenseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SplitFrag = new SplitFragment();
+                SplitFrag = new SplitFragment(getApplicationContext());
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragContainer,SplitFrag)
                         .commit();
             }
         });
+
     }
 }

@@ -80,7 +80,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder>{
         }else{
             holder.numberOfPeopleTV.setText(String.valueOf(cardData.get(position).getUserPhoto().size()-4)+""+"+");
         }
-        holder.cards.setOnClickListener(new View.OnClickListener() {
+        holder.cardItemCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context,RoomActivity.class);
@@ -103,6 +103,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder>{
         TextView roomid, roomName, numberOfPeopleTV;
         CardView user2,user3,user4;
         Button cards, peoples;
+        CardView cardItemCard;
         public ViewHolder(View itemView) {
             super(itemView);
             u1 = itemView.findViewById(R.id.user1IV);
@@ -117,6 +118,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder>{
             user2 = itemView.findViewById(R.id.user2);
             user3 = itemView.findViewById(R.id.user3);
             user4 = itemView.findViewById(R.id.user4);
+            cardItemCard = itemView.findViewById(R.id.cardItemCard);
         }
     }
 }

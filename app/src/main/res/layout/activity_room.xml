@@ -49,9 +49,10 @@
 
     <Button
         android:id="@+id/splitExpenseBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_margin="8dp"
         android:layout_alignParentBottom="true"
         android:theme="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:outlineSpotShadowColor="#b2fab4"
