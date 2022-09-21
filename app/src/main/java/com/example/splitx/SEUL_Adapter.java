@@ -27,7 +27,7 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Context context;
     List<Integer> pos = new ArrayList<>();
-     int selectedUserCount = 0;
+    static int selectedUserCount = 0;
     String amount;
     float splitSum;
     SEULA_Object obj;
@@ -53,47 +53,37 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder holder, int position) {
         splitSum = Float.valueOf(amount);
         holder.userName.setText(seulaData.get(position).getName());
-//        if(FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(seulaData.get(position).getEmail())){
-//            obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).userPhoto,"0",seulaData.get(position).email,true);
-//            seulaData.set(position,obj);
-//            holder.stlCheck.setChecked(true);
-//            holder.amount.setText("₹ "+amount);
-//        }
-        if(seulaData.get(position).selected){
-            holder.stlCheck.setChecked(true);
-        }else{
-            holder.stlCheck.setChecked(false);
-        }
+
 
         Picasso.get().load(seulaData.get(position).getUserPhoto()).into(holder.userPhoto);
         if(seulaData.get(position).selected){
-            selectedUserCount++;
-            splitSum/=selectedUserCount;
+//            selectedUserCount++;
+                        holder.amount.setText("₹ " + getSplitAmount());
             holder.stlCheck.setChecked(true);
-            holder.amount.setText("₹ "+splitSum);
         }else{
-            holder.amount.setText("₹ 0");
+                        holder.amount.setText("₹ 0");
+
             holder.stlCheck.setChecked(false);
         }
+//        splitSum/=selectedUserCount;
+//        if(splitSum>0) {
+//            holder.amount.setText("₹ " + splitSum);
+//        }else{
+//            holder.amount.setText("₹ 0");
+//        }
+
         holder.splitUserItemCons.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(holder.stlCheck.isChecked()){
-                    splitSum/=selectedUserCount;
-                    holder.stlCheck.setChecked(false);
                     obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),String.valueOf(splitSum),seulaData.get(position).getEmail(),false);
-                    seulaData.remove(obj);
-                    newSeulaData.add(obj);
-
+                    seulaData.remove(position);
+                    seulaData.add(obj);
                 }else{
-                    splitSum/=selectedUserCount;
-                    holder.amount.setText("₹ "+String.valueOf(splitSum));
-                    holder.stlCheck.setChecked(true);
                     obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),"0",seulaData.get(position).getEmail(),true);
-                    newSeulaData.add(obj);
-                    seulaData.remove(obj);
+                    seulaData.remove(position);
+                    seulaData.add(obj);
                 }
-                newSeulaData.addAll(seulaData);
                 update();
             }
 
@@ -103,9 +93,22 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
     public int getItemCount() {
         return seulaData.size();
     }
+    public String getSplitAmount(){
+        String s = null;
+        selectedUserCount = 0;
+        for(int i=0;i<seulaData.size();i++){
+            if(seulaData.get(i).selected == true){
+                selectedUserCount++;
+            }
+        }
+        Toast.makeText(context, ""+selectedUserCount, Toast.LENGTH_SHORT).show();
+        splitSum/=selectedUserCount;
+        s = String.valueOf(splitSum);
+        return s;
+    }
     public void update(){
-        seulaData.clear();
-        seulaData.addAll(newSeulaData);
+        splitSum = 0;
+        selectedUserCount = 0;
         notifyDataSetChanged();
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
