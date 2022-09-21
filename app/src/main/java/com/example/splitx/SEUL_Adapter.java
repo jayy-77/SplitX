@@ -54,33 +54,24 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
         splitSum = Float.valueOf(amount);
         holder.userName.setText(seulaData.get(position).getName());
 
-
         Picasso.get().load(seulaData.get(position).getUserPhoto()).into(holder.userPhoto);
+
         if(seulaData.get(position).selected){
-//            selectedUserCount++;
-                        holder.amount.setText("₹ " + getSplitAmount());
+            holder.amount.setText("₹ " + getSplitAmount());
             holder.stlCheck.setChecked(true);
         }else{
-                        holder.amount.setText("₹ 0");
-
+            holder.amount.setText("₹ 0");
             holder.stlCheck.setChecked(false);
         }
-//        splitSum/=selectedUserCount;
-//        if(splitSum>0) {
-//            holder.amount.setText("₹ " + splitSum);
-//        }else{
-//            holder.amount.setText("₹ 0");
-//        }
-
         holder.splitUserItemCons.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(holder.stlCheck.isChecked()){
-                    obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),String.valueOf(splitSum),seulaData.get(position).getEmail(),false);
+                    obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),seulaData.get(position).getEmail(),false);
                     seulaData.remove(position);
                     seulaData.add(obj);
                 }else{
-                    obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),"0",seulaData.get(position).getEmail(),true);
+                    obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),seulaData.get(position).getEmail(),true);
                     seulaData.remove(position);
                     seulaData.add(obj);
                 }
@@ -94,17 +85,15 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
         return seulaData.size();
     }
     public String getSplitAmount(){
-        String s = null;
+
         selectedUserCount = 0;
         for(int i=0;i<seulaData.size();i++){
             if(seulaData.get(i).selected == true){
                 selectedUserCount++;
             }
         }
-        Toast.makeText(context, ""+selectedUserCount, Toast.LENGTH_SHORT).show();
         splitSum/=selectedUserCount;
-        s = String.valueOf(splitSum);
-        return s;
+        return String.valueOf(splitSum);
     }
     public void update(){
         splitSum = 0;

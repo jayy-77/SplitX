@@ -4,17 +4,19 @@ import com.google.firebase.firestore.Exclude;
 
 public class SEULA_Object {
 
-    String amount ,email, userPhoto, name;
+    @Exclude
+    String userPhoto, name;
+    String  email;
+
 
     boolean selected;
 
     public SEULA_Object(){
 
     }
-    public SEULA_Object(String name, String userPhoto, String amount, String email, boolean selected){
+    public SEULA_Object(String name, String userPhoto, String email, boolean selected){
         this.name = name;
         this.userPhoto = userPhoto;
-        this.amount = amount;
         this.email = email;
         this.selected = selected;
     }
@@ -39,13 +41,7 @@ public class SEULA_Object {
 
 
 
-    public String getAmount() {
-        return amount;
-    }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
-    }
 
     public String getName() {
         return name;

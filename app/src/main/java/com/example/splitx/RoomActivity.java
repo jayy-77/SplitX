@@ -10,15 +10,19 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 
 import com.google.android.material.appbar.MaterialToolbar;
+
+import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
     public String roomName, roomId;
     Button splitExepenseBtn;
     MaterialToolbar topBar;
     private Fragment SplitFrag;
+    FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,7 @@ public class RoomActivity extends AppCompatActivity {
         roomName = getIntent().getStringExtra("roomName");
         roomId = getIntent().getStringExtra("roomId");
 
+        frameLayout  =findViewById(R.id.fragContainer);
         splitExepenseBtn = findViewById(R.id.splitExpenseBtn);
         topBar = findViewById(R.id.topAppBarRoomActivity);
         topBar.setTitle(roomName);
@@ -52,11 +57,16 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SplitFrag = new SplitFragment(getApplicationContext());
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragContainer,SplitFrag)
-                        .commit();
+                frameLayout.setVisibility(View.VISIBLE);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer,SplitFrag).commit();
             }
         });
+
+    }
+    public void changeFragment(){
+        frameLayout.setVisibility(View.GONE);
+    }
+    public void seulData(ArrayList<SEULA_Object> userList, Float splitSum){
 
     }
 }

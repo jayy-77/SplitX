@@ -74,7 +74,7 @@ public class SplitFragment extends Fragment {
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                ((RoomActivity)getContext()).changeFragment();
             }
         });
         splitAmoundEt.addTextChangedListener(new TextWatcher() {
@@ -90,8 +90,10 @@ public class SplitFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 amountEt = splitAmoundEt.getText().toString();
-                SEULAdapter = new SEUL_Adapter(seula_objectsList,getContext(),amountEt);
-                seulaRecyclerView.setAdapter(SEULAdapter);
+                if(!amountEt.isEmpty()) {
+                    SEULAdapter = new SEUL_Adapter(seula_objectsList, getContext(), amountEt);
+                    seulaRecyclerView.setAdapter(SEULAdapter);
+                }
             }
         });
 
@@ -105,7 +107,7 @@ public class SplitFragment extends Fragment {
                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                        @Override
                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            seula_object = new SEULA_Object(documentSnapshot.get("name").toString(),documentSnapshot.get("profileUri").toString(),"0",documentSnapshot.get("email").toString(),false);
+                                            seula_object = new SEULA_Object(documentSnapshot.get("name").toString(),documentSnapshot.get("profileUri").toString(),documentSnapshot.get("email").toString(),false);
                                             seula_objectsList.add(seula_object);
                                            SEULAdapter = new SEUL_Adapter(seula_objectsList,getContext(),"0");
                                            seulaRecyclerView.setAdapter(SEULAdapter);
