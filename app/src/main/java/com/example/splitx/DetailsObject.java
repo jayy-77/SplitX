@@ -15,11 +15,7 @@ public class DetailsObject {
     public List<String> getJoinedUsers() {
         return joinedUsers;
     }
-
     public void setJoinedUsers(List<String> joinedUsers) {
         this.joinedUsers = joinedUsers;
     }
-
-
-
 }

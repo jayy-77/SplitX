@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,11 +32,14 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
     String amount;
     float splitSum;
     SEULA_Object obj;
+    SplitFragment fragment;
+    public static int cnt = 0;
 
-    public SEUL_Adapter(ArrayList<SEULA_Object> seulaData, Context context, String amount) {
+    public SEUL_Adapter(ArrayList<SEULA_Object> seulaData, Context context, String amount, SplitFragment fragment) {
         this.seulaData = seulaData;
         this.context = context;
         this.amount = amount;
+        this.fragment = fragment;
     }
     public SEUL_Adapter(){
 
@@ -67,13 +71,17 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
             @Override
             public void onClick(View view) {
                 if(holder.stlCheck.isChecked()){
+                    cnt--;
+                    fragment.dataBus(seulaData,String.valueOf(cnt));
                     obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),seulaData.get(position).getEmail(),false);
                     seulaData.remove(position);
                     seulaData.add(obj);
                 }else{
+                    cnt++;
                     obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),seulaData.get(position).getEmail(),true);
                     seulaData.remove(position);
                     seulaData.add(obj);
+                    fragment.dataBus(seulaData,String.valueOf(cnt));
                 }
                 update();
             }

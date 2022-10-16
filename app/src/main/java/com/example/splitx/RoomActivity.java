@@ -56,17 +56,14 @@ public class RoomActivity extends AppCompatActivity {
         splitExepenseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SplitFrag = new SplitFragment(getApplicationContext());
+                SplitFrag = new SplitFragment(getApplicationContext(),roomId);
                 frameLayout.setVisibility(View.VISIBLE);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer,SplitFrag).commit();
             }
         });
-
     }
     public void changeFragment(){
         frameLayout.setVisibility(View.GONE);
     }
-    public void seulData(ArrayList<SEULA_Object> userList, Float splitSum){
 
-    }
 }

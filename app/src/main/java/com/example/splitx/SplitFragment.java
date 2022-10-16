@@ -13,7 +13,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -21,7 +23,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SplitFragment extends Fragment {
     RecyclerView seulaRecyclerView;
@@ -31,17 +35,23 @@ public class SplitFragment extends Fragment {
     EditText splitAmoundEt;
     SEULA_Object seula_object;
     Fragment me = this;
+    String roomId;
     public String amountEt;
+    TextView numberOfJoinedPeople;
+    private ArrayList<SEULA_Object> seulaData = new ArrayList<>();
+    public ArrayList<SEULA_Object_For_Fire> seulaDataForFire = new ArrayList<>();
     ArrayList<SEULA_Object> seula_objectsList = new ArrayList<>();
     SEUL_Adapter SEULAdapter;
     List<String> userEmails = new ArrayList<>();
     MaterialToolbar materialToolbar;
+    Button sendRequestButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public SplitFragment() {
     }
 
-    public  SplitFragment(Context context){
+    public  SplitFragment(Context context,String roomId){
         this.context = context;
+        this.roomId = roomId;
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,9 +62,7 @@ public class SplitFragment extends Fragment {
         void onAmountChange(String text);
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    public void seulData(ArrayList<SEULA_Object> userList, Float splitSum){
 
     }
 
@@ -71,6 +79,8 @@ public class SplitFragment extends Fragment {
         seulaRecyclerView.setLayoutManager(linearLayout);
         splitAmoundEt = v.findViewById(R.id.amount);
         materialToolbar = v.findViewById(R.id.topAppBarRoomActivity);
+        numberOfJoinedPeople = v.findViewById(R.id.numberOfJoinedPeople);
+        sendRequestButton = v.findViewById(R.id.sendRequestButton);
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,7 +101,7 @@ public class SplitFragment extends Fragment {
             public void afterTextChanged(Editable editable) {
                 amountEt = splitAmoundEt.getText().toString();
                 if(!amountEt.isEmpty()) {
-                    SEULAdapter = new SEUL_Adapter(seula_objectsList, getContext(), amountEt);
+                    SEULAdapter = new SEUL_Adapter(seula_objectsList, getContext(), amountEt,SplitFragment.this);
                     seulaRecyclerView.setAdapter(SEULAdapter);
                 }
             }
@@ -109,7 +119,7 @@ public class SplitFragment extends Fragment {
                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             seula_object = new SEULA_Object(documentSnapshot.get("name").toString(),documentSnapshot.get("profileUri").toString(),documentSnapshot.get("email").toString(),false);
                                             seula_objectsList.add(seula_object);
-                                           SEULAdapter = new SEUL_Adapter(seula_objectsList,getContext(),"0");
+                                           SEULAdapter = new SEUL_Adapter(seula_objectsList,getContext(),"0",SplitFragment.this);
                                            seulaRecyclerView.setAdapter(SEULAdapter);
                                        }
                                    });
@@ -118,8 +128,28 @@ public class SplitFragment extends Fragment {
 
                     }
                 });
-
+        sendRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Map<String,ArrayList<SEULA_Object_For_Fire>> userData = new HashMap<>();
+                userData.put("SplitReq",seulaDataForFire);
+                db.collection("Rooms").document(roomId).collection("SplitRequests").document("testing").set(userData);
+            }
+        });
 
         return v;
+    }
+    public void dataBus(ArrayList<SEULA_Object> seulaData,String s){
+        numberOfJoinedPeople.setText("Split between "+s+" people");
+        this.seulaData.addAll(seulaData);
+        for(int i=0;i<seulaData.size();i++){
+            if(seulaData.get(i).selected == true){
+                SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(seulaData.get(i).getEmail(),"PAID");
+                seulaDataForFire.add(obj);
+            }else{
+                SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(seulaData.get(i).getEmail(),"UNPAID");
+                seulaDataForFire.add(obj);
+            }
+        }
     }
 }

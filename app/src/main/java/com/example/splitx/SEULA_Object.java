@@ -1,15 +1,12 @@
 package com.example.splitx;
 
 import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 public class SEULA_Object {
 
-    @Exclude
-    String userPhoto, name;
-    String  email;
-
-
-    boolean selected;
+    @Exclude String userPhoto, name,email;
+    @Exclude boolean selected;
 
     public SEULA_Object(){
 
