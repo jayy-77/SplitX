@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1675925925925926" />
         <entry key="app/src/main/res/drawable/checkbox_background.xml" value="0.373" />
         <entry key="app/src/main/res/drawable/custom_checkbox.xml" value="0.373" />
         <entry key="app/src/main/res/drawable/disabled_hackdshake.xml" value="0.256" />
@@ -28,7 +29,7 @@
         <entry key="app/src/main/res/layout/fragment_cards.xml" value="0.3170289855072464" />
         <entry key="app/src/main/res/layout/fragment_room.xml" value="0.3138586956521739" />
         <entry key="app/src/main/res/layout/fragment_split.xml" value="0.3651452282157676" />
-        <entry key="app/src/main/res/layout/request_item.xml" value="0.5362116991643454" />
+        <entry key="app/src/main/res/layout/request_item.xml" value="0.2836438923395445" />
         <entry key="app/src/main/res/layout/room_name_dilaog.xml" value="0.3170289855072464" />
         <entry key="app/src/main/res/layout/split_user_item.xml" value="0.67" />
         <entry key="app/src/main/res/menu/bottomenu.xml" value="0.3734375" />

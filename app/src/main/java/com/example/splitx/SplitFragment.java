@@ -1,6 +1,7 @@
 package com.example.splitx;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,6 +42,7 @@ public class SplitFragment extends Fragment {
     EditText splitAmoundEt;
     SEULA_Object seula_object;
     Fragment me = this;
+    int cnt = 0;
     String roomId;
     String splitAmount;
     public String amountEt;
@@ -54,6 +57,7 @@ public class SplitFragment extends Fragment {
     SEUL_Adapter SEULAdapter;
     List<String> userEmails = new ArrayList<>();
     MaterialToolbar materialToolbar;
+    EditText splitNote;
     Button sendRequestButton;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     public SplitFragment() {
@@ -91,6 +95,7 @@ public class SplitFragment extends Fragment {
         materialToolbar = v.findViewById(R.id.topAppBarRoomActivity);
         numberOfJoinedPeople = v.findViewById(R.id.numberOfJoinedPeople);
         sendRequestButton = v.findViewById(R.id.sendRequestButton);
+        splitNote = v.findViewById(R.id.splitNote);
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,23 +146,39 @@ public class SplitFragment extends Fragment {
         sendRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                otherDetailsMap.put("Date",cal.get(Calendar.DAY_OF_MONTH) +"/"+ cal.get(Calendar.MONTH));
-                otherDetailsMap.put("SplitSender",FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                otherDetailsMap.put("Amount",splitAmount);
-                userData.put("Paid",paidList);
-                userData.put("UnPaid",UnPaidList);
-                SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(otherDetailsMap,userData);
-                db.collection("Rooms").document(roomId).collection("SplitRequests").add(obj);
-                ((RoomActivity)getContext()).changeFragment();
-
+                if(cnt>0 && !splitAmoundEt.getText().toString().isEmpty() && !splitNote.getText().toString().isEmpty()) {
+                    Calendar cal = Calendar.getInstance();
+                    otherDetailsMap.put("Date", cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH));
+                    otherDetailsMap.put("SplitSender", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    otherDetailsMap.put("Amount", splitAmount);
+                    otherDetailsMap.put("SplitNote", splitNote.getText().toString());
+                    userData.put("Paid", paidList);
+                    userData.put("UnPaid", UnPaidList);
+                    SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(otherDetailsMap, userData);
+                    db.collection("Rooms").document(roomId).collection("SplitRequests").add(obj);
+                    ((RoomActivity) getContext()).changeFragment();
+                }else{
+                    Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Atleast select one user", Snackbar.LENGTH_LONG);
+                    snackBar.setBackgroundTint(Color.parseColor("#FF0000"));
+                    snackBar.setTextColor(Color.WHITE);
+                    snackBar.setAction("Close", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            snackBar.dismiss();
+                        }
+                    });
+                    snackBar.setActionTextColor(Color.WHITE);
+                    snackBar.show();
+                }
             }
         });
 
         return v;
     }
-    public void dataBus(ArrayList<SEULA_Object> seulaData,String s,String splitAmount){
+    public void dataBus(ArrayList<SEULA_Object> seulaData,String s,String splitAmount,int cnt){
         this.splitAmount = "0";
+        this.cnt = 0;
+        this.cnt = cnt;
         this.splitAmount = splitAmount;
         paidList.clear();
         UnPaidList.clear();

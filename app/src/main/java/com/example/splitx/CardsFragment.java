@@ -183,6 +183,13 @@ public class CardsFragment extends Fragment {
                                         Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Room created successfully", Snackbar.LENGTH_LONG);
                                         snackBar.setBackgroundTint(Color.parseColor("#b2fab4"));
                                         snackBar.setTextColor(Color.BLACK);
+                                                snackBar.setAction("Close", new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        snackBar.dismiss();
+                                                    }
+                                                });
+                                                snackBar.setActionTextColor(Color.BLACK);
                                         snackBar.show();
                                             CardsFragment cardsFragment = new CardsFragment();
                                             getActivity().getSupportFragmentManager().beginTransaction()
@@ -194,8 +201,15 @@ public class CardsFragment extends Fragment {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Failed  to create room", Snackbar.LENGTH_LONG);
-                                                snackBar.setBackgroundTint(Color.parseColor("#b2fab4"));
-                                                snackBar.setTextColor(Color.BLACK);
+                                                snackBar.setBackgroundTint(Color.parseColor("#FF0000"));
+                                                snackBar.setTextColor(Color.WHITE);
+                                                snackBar.setAction("Close", new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view) {
+                                                        snackBar.dismiss();
+                                                    }
+                                                });
+                                                snackBar.setActionTextColor(Color.WHITE);
                                                 snackBar.show();
                                             }
                                         });
