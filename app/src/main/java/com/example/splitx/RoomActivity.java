@@ -22,7 +22,7 @@ public class RoomActivity extends AppCompatActivity {
     Button splitExepenseBtn;
     MaterialToolbar topBar;
     private Fragment SplitFrag;
-    FrameLayout frameLayout;//
+    FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

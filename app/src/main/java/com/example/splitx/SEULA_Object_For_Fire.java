@@ -1,30 +1,35 @@
 package com.example.splitx;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class SEULA_Object_For_Fire {
-    String email, paymentStatus;
+
+    Map<String,String> otherDetailsMap = new HashMap<>();
+    Map<String, List<String>> userData = new HashMap<>();
+
     public SEULA_Object_For_Fire(){
 
     }
-    public SEULA_Object_For_Fire(String email, String paymentStatus){
-        this.email = email;
-        this.paymentStatus = paymentStatus;
+    public SEULA_Object_For_Fire( Map<String,String> otherDetailsMap ,Map<String, List<String>> userData ){
+        this.otherDetailsMap = otherDetailsMap;
+        this.userData = userData;
+    }
+    public Map<String, String> getOtherDetailsMap() {
+        return otherDetailsMap;
     }
 
-    public String getEmail() {
-        return email;
+    public void setOtherDetailsMap(Map<String, String> otherDetailsMap) {
+        this.otherDetailsMap = otherDetailsMap;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public Map<String, List<String>> getUserData() {
+        return userData;
     }
 
-    public String getPaymentStatus() {
-        return paymentStatus;
+    public void setUserData(Map<String, List<String>> userData) {
+        this.userData = userData;
     }
-
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
 
 }

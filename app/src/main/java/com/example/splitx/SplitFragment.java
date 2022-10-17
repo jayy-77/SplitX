@@ -19,10 +19,15 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +43,11 @@ public class SplitFragment extends Fragment {
     String roomId;
     public String amountEt;
     TextView numberOfJoinedPeople;
+    public List<String> paidList = new ArrayList<>();
+    public List<String> UnPaidList = new ArrayList<>();
     private ArrayList<SEULA_Object> seulaData = new ArrayList<>();
+    Map<String,String> otherDetailsMap = new HashMap<>();
+    Map<String,List<String>> userData = new HashMap<>();
     public ArrayList<SEULA_Object_For_Fire> seulaDataForFire = new ArrayList<>();
     ArrayList<SEULA_Object> seula_objectsList = new ArrayList<>();
     SEUL_Adapter SEULAdapter;
@@ -131,25 +140,38 @@ public class SplitFragment extends Fragment {
         sendRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Map<String,ArrayList<SEULA_Object_For_Fire>> userData = new HashMap<>();
-                userData.put("SplitReq",seulaDataForFire);
-                db.collection("Rooms").document(roomId).collection("SplitRequests").document("testing").set(userData);
+                Calendar cal = Calendar.getInstance();
+                otherDetailsMap.put("Date",cal.get(Calendar.DAY_OF_MONTH) +"/"+ cal.get(Calendar.MONTH));
+                otherDetailsMap.put("SplitSender",FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                userData.put("Paid",paidList);
+                userData.put("UnPaid",UnPaidList);
+                SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(otherDetailsMap,userData);
+                db.collection("Rooms").document(roomId).collection("SplitRequests").add(obj);
             }
         });
 
         return v;
     }
     public void dataBus(ArrayList<SEULA_Object> seulaData,String s){
+        paidList.clear();
+        UnPaidList.clear();
         numberOfJoinedPeople.setText("Split between "+s+" people");
         this.seulaData.addAll(seulaData);
+        int flag = 0;
         for(int i=0;i<seulaData.size();i++){
             if(seulaData.get(i).selected == true){
-                SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(seulaData.get(i).getEmail(),"PAID");
-                seulaDataForFire.add(obj);
-            }else{
-                SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(seulaData.get(i).getEmail(),"UNPAID");
-                seulaDataForFire.add(obj);
+                if(seulaData.get(i).getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                    paidList.add(seulaData.get(i).getEmail());
+                    flag = 1;
+                }else{
+                    UnPaidList.add(seulaData.get(i).getEmail());
+                }
             }
+        }
+        if(flag == 1){
+            otherDetailsMap.put("PaidNumber","1");
+        }else{
+            otherDetailsMap.put("PaidNumber","0");
         }
     }
 }
