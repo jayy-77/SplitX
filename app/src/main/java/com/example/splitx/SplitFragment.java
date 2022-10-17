@@ -134,13 +134,11 @@ public class SplitFragment extends Fragment {
                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             seula_object = new SEULA_Object(documentSnapshot.get("name").toString(),documentSnapshot.get("profileUri").toString(),documentSnapshot.get("email").toString(),false);
                                             seula_objectsList.add(seula_object);
-                                           SEULAdapter = new SEUL_Adapter(seula_objectsList,getContext(),"0",SplitFragment.this);
-                                           seulaRecyclerView.setAdapter(SEULAdapter);
+                                            SEULAdapter = new SEUL_Adapter(seula_objectsList,getContext(),"0",SplitFragment.this);
+                                            seulaRecyclerView.setAdapter(SEULAdapter);
                                        }
                                    });
-
                        }
-
                     }
                 });
         sendRequestButton.setOnClickListener(new View.OnClickListener() {

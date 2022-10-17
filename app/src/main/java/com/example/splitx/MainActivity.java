@@ -122,12 +122,8 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.cards:
                         CardsFragment = new CardsFragment();
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragContainer,CardsFragment)
-                                .commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer,CardsFragment).commit();
                         return true;
-
-
                 }
                 return false;
             }

@@ -31,5 +31,4 @@ public class SEULA_Object_For_Fire {
     public void setUserData(Map<String, List<String>> userData) {
         this.userData = userData;
     }
-
 }
