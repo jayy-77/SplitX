@@ -1,12 +1,19 @@
 package com.example.splitx;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -26,9 +35,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import dev.shreyaspatil.easyupipayment.EasyUpiPayment;
+import dev.shreyaspatil.easyupipayment.exception.AppNotFoundException;
+import dev.shreyaspatil.easyupipayment.listener.PaymentStatusListener;
+import dev.shreyaspatil.easyupipayment.model.TransactionDetails;
 
 
-public class RoomActivity extends AppCompatActivity {
+public class RoomActivity extends AppCompatActivity  {
     public String roomName, roomId;
     Button splitExepenseBtn;
     MaterialToolbar topBar;
@@ -38,6 +51,7 @@ public class RoomActivity extends AppCompatActivity {
     SplitRequestAdapter splitRequestAdapter;
     LinearLayoutManager linearLayout;
     SEULA_Object_For_Fire seula_object_for_fire;
+    private EasyUpiPayment easyUpiPayment;
     private ArrayList<SEULA_Object_For_Fire> requestData = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -101,47 +115,57 @@ public class RoomActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer,SplitFrag).commit();
             }
         });
+
     }
-    public void launchUPI(String pa, String pn, String tn, String am){
-        // look below for a reference to these parameters
+
+    public void launchUPI(String pa, String pn, String tn, String am) throws AppNotFoundException {
         Uri uri = Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", pa)
                 .appendQueryParameter("pn", pn)
-                .appendQueryParameter("tn", pn)
+                .appendQueryParameter("tn", tn)
                 .appendQueryParameter("am", am)
                 .appendQueryParameter("cu", "INR")
                 .build();
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivityForResult(intent, 1421);
+        }catch (Exception e){
+            Snackbar snackBar = Snackbar.make(this.findViewById(android.R.id.content), "No UPI app found", Snackbar.LENGTH_LONG);
+            snackBar.setBackgroundTint(Color.parseColor("#FF0000"));
+            snackBar.setTextColor(Color.WHITE);
+            snackBar.setAction("Close", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    snackBar.dismiss();
+                }
+            });
+            snackBar.setActionTextColor(Color.WHITE);
+            snackBar.show();
 
-        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
-        upiPayIntent.setData(uri);
-
-        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
-
-        if(null != chooser.resolveActivity(getPackageManager())) {
-            startActivityForResult(chooser, RESULT_OK);
-        } else {
-            Log.d("TAG", "No activity found to handle UPI Payment");
         }
+
     }
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(RESULT_OK == requestCode){
-            if(RESULT_OK == resultCode){
-                new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Great!")
-                        .setContentText("You completed this task.").show();
-                String transId = data.getStringExtra("response");
-            } else {
-                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Oops...")
-                        .setContentText("Something went wrong!").show();
-                Log.d("TAG", "UPI Payment failed");
+        if (requestCode==1421)
+        {
+            if (resultCode==RESULT_OK)
+            {
+                assert data != null;
+                Log.e("data","response "+data.getStringExtra("response"));
+
+                Toast.makeText(this, "response : "+data.getStringExtra("response"), Toast.LENGTH_LONG).show();
+
             }
         }
     }
+
+
     public void changeFragment(){
         frameLayout.setVisibility(View.GONE);
     }
+
 
 }

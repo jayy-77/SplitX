@@ -36,6 +36,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'cn.pedant.sweetalert:library:1.3'
+    implementation 'dev.shreyaspatil.EasyUpiPayment:EasyUpiPayment:3.0.3'
+
+
+
 
 }
 apply plugin: 'com.google.gms.google-services'
