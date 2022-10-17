@@ -157,8 +157,32 @@ public class SplitFragment extends Fragment {
                     SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(otherDetailsMap, userData);
                     db.collection("Rooms").document(roomId).collection("SplitRequests").add(obj);
                     ((RoomActivity) getContext()).changeFragment();
-                }else{
+                }else if(cnt<=0){
                     Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Atleast select one user", Snackbar.LENGTH_LONG);
+                    snackBar.setBackgroundTint(Color.parseColor("#FF0000"));
+                    snackBar.setTextColor(Color.WHITE);
+                    snackBar.setAction("Close", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            snackBar.dismiss();
+                        }
+                    });
+                    snackBar.setActionTextColor(Color.WHITE);
+                    snackBar.show();
+                }else if(splitNote.getText().toString().isEmpty()){
+                    Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Please write a note", Snackbar.LENGTH_LONG);
+                    snackBar.setBackgroundTint(Color.parseColor("#FF0000"));
+                    snackBar.setTextColor(Color.WHITE);
+                    snackBar.setAction("Close", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            snackBar.dismiss();
+                        }
+                    });
+                    snackBar.setActionTextColor(Color.WHITE);
+                    snackBar.show();
+                }else if(splitAmoundEt.getText().toString().isEmpty()){
+                    Snackbar snackBar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Amount should be atleast 1Rs", Snackbar.LENGTH_LONG);
                     snackBar.setBackgroundTint(Color.parseColor("#FF0000"));
                     snackBar.setTextColor(Color.WHITE);
                     snackBar.setAction("Close", new View.OnClickListener() {
