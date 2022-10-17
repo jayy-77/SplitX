@@ -41,6 +41,7 @@ public class SplitFragment extends Fragment {
     SEULA_Object seula_object;
     Fragment me = this;
     String roomId;
+    String splitAmount;
     public String amountEt;
     TextView numberOfJoinedPeople;
     public List<String> paidList = new ArrayList<>();
@@ -143,16 +144,21 @@ public class SplitFragment extends Fragment {
                 Calendar cal = Calendar.getInstance();
                 otherDetailsMap.put("Date",cal.get(Calendar.DAY_OF_MONTH) +"/"+ cal.get(Calendar.MONTH));
                 otherDetailsMap.put("SplitSender",FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                otherDetailsMap.put("Amount",splitAmount);
                 userData.put("Paid",paidList);
                 userData.put("UnPaid",UnPaidList);
                 SEULA_Object_For_Fire obj = new SEULA_Object_For_Fire(otherDetailsMap,userData);
                 db.collection("Rooms").document(roomId).collection("SplitRequests").add(obj);
+                ((RoomActivity)getContext()).changeFragment();
+
             }
         });
 
         return v;
     }
-    public void dataBus(ArrayList<SEULA_Object> seulaData,String s){
+    public void dataBus(ArrayList<SEULA_Object> seulaData,String s,String splitAmount){
+        this.splitAmount = "0";
+        this.splitAmount = splitAmount;
         paidList.clear();
         UnPaidList.clear();
         numberOfJoinedPeople.setText("Split between "+s+" people");

@@ -72,7 +72,7 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
             public void onClick(View view) {
                 if(holder.stlCheck.isChecked()){
                     cnt--;
-                    fragment.dataBus(seulaData,String.valueOf(cnt));
+                    fragment.dataBus(seulaData,String.valueOf(cnt),getSplitAmount());
                     obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),seulaData.get(position).getEmail(),false);
                     seulaData.remove(position);
                     seulaData.add(obj);
@@ -81,7 +81,7 @@ public class SEUL_Adapter extends RecyclerView.Adapter<SEUL_Adapter.ViewHolder>{
                     obj = new SEULA_Object(seulaData.get(position).name,seulaData.get(position).getUserPhoto(),seulaData.get(position).getEmail(),true);
                     seulaData.remove(position);
                     seulaData.add(obj);
-                    fragment.dataBus(seulaData,String.valueOf(cnt));
+                    fragment.dataBus(seulaData,String.valueOf(cnt),getSplitAmount());
                 }
                 update();
             }
