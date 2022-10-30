@@ -141,7 +141,7 @@ public class RoomActivity extends AppCompatActivity  {
             });
             snackBar.setActionTextColor(Color.WHITE);
             snackBar.show();
-
+//
         }
 
     }

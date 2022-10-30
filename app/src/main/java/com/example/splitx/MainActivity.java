@@ -31,6 +31,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private Fragment CardsFragment;
+    private Fragment SettingsFragment;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     String currentUser;
     private BottomNavigationView bottomNavigationItemView;
@@ -124,6 +125,11 @@ public class MainActivity extends AppCompatActivity {
                         CardsFragment = new CardsFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer,CardsFragment).commit();
                         return true;
+                    case R.id.account:
+                        SettingsFragment = new SettingsFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer,SettingsFragment).commit();
+                        return true;
+
                 }
                 return false;
             }

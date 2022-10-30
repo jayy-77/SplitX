@@ -1,0 +1,13 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:shouldDisableView="true"
+        app:title="UPI">
+
+        <EditTextPreference
+            app:key="upi"
+            app:title="Your UPI Id"
+            app:useSimpleSummaryProvider="true"/>
+    </PreferenceCategory>
+</PreferenceScreen>
