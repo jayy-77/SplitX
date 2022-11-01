@@ -53,6 +53,9 @@ public class SplitRequestAdapter extends RecyclerView.Adapter<SplitRequestAdapte
             @Override
             public void onClick(View view) {
                 try {
+                    ((RoomActivity)context).receiverEmail = requestData.get(position).getOtherDetailsMap().get("SplitSender");
+                    ((RoomActivity)context).amount = requestData.get(position).getOtherDetailsMap().get("Amount");
+
                     ((RoomActivity)context).launchUPI("jmpatel7358@okhdfcbank","Jay Prajapati",requestData.get(position).otherDetailsMap.get("SplitNote"),requestData.get(position).otherDetailsMap.get("Amount"));
                 } catch (AppNotFoundException e) {
                     e.printStackTrace();

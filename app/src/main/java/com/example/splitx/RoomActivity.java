@@ -28,11 +28,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import dev.shreyaspatil.easyupipayment.EasyUpiPayment;
@@ -45,6 +48,8 @@ public class RoomActivity extends AppCompatActivity  {
     public String roomName, roomId;
     Button splitExepenseBtn;
     MaterialToolbar topBar;
+    String receiverEmail = null, amount = null;
+
     private Fragment SplitFrag;
     FrameLayout frameLayout;
     RecyclerView recyclerView;
@@ -52,6 +57,7 @@ public class RoomActivity extends AppCompatActivity  {
     LinearLayoutManager linearLayout;
     SEULA_Object_For_Fire seula_object_for_fire;
     private EasyUpiPayment easyUpiPayment;
+    String upi = null;
     private ArrayList<SEULA_Object_For_Fire> requestData = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -153,11 +159,20 @@ public class RoomActivity extends AppCompatActivity  {
         {
             if (resultCode==RESULT_OK)
             {
+                        db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                              upi = documentSnapshot.get("upi").toString();
+                            }
+                        }) ;
                 assert data != null;
                 Log.e("data","response "+data.getStringExtra("response"));
-
-                Toast.makeText(this, "response : "+data.getStringExtra("response"), Toast.LENGTH_LONG).show();
-
+                String responseArr[] = data.getStringExtra("response").split("&");
+                Calendar cal = Calendar.getInstance();
+                PassBookObject obj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE)+" "+cal.get(Calendar.AM_PM),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,amount,responseArr[1]);
+                db.collection("Rooms").document(receiverEmail).collection("PassBook").add(obj);
+                Toast.makeText(this, "response : "+responseArr[1], Toast.LENGTH_LONG).show();
             }
         }
     }
