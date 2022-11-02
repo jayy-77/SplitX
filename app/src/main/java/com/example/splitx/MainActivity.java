@@ -32,6 +32,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private Fragment CardsFragment;
     private Fragment SettingsFragment;
+    private Fragment PassBookFragment;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     String currentUser;
     private BottomNavigationView bottomNavigationItemView;
@@ -129,7 +130,10 @@ public class MainActivity extends AppCompatActivity {
                         SettingsFragment = new SettingsFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer,SettingsFragment).commit();
                         return true;
-
+                    case R.id.PassBook:
+                        PassBookFragment = new PassBookFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragContainer,PassBookFragment).commit();
+                        return true;
                 }
                 return false;
             }

@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_baseline_credit_card_24"
         android:title="Cards"/>
     <item
-        android:id="@+id/History"
+        android:id="@+id/PassBook"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_history_24"
         android:title="History"/>

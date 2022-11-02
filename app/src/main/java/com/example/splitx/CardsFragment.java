@@ -43,12 +43,10 @@ public class CardsFragment extends Fragment {
     public CardsFragment() {
 
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_cards, container, false);
@@ -78,7 +76,6 @@ public class CardsFragment extends Fragment {
                                             }
                                         }
                                     }catch (Exception e){
-
                                     }
                                 }
                                 cardsAdapter = new CardsAdapter(roomObjects,getContext());
@@ -93,7 +90,6 @@ public class CardsFragment extends Fragment {
 
                     }
                 });
-
 //
 //        db.collection("Rooms").addSnapshotListener(new EventListener<QuerySnapshot>() {
 //            @Override
@@ -113,7 +109,7 @@ public class CardsFragment extends Fragment {
 //            }
 //        });
 
-            createRoom = v.findViewById(R.id.createRoom);
+        createRoom = v.findViewById(R.id.createRoom);
 
         createRoom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,8 +160,6 @@ public class CardsFragment extends Fragment {
                                                         });
                                             }
                                         });
-
-
                                        List<String> joinedRooms = new ArrayList<>();
                                        joinedRooms.add(roomId);
                                        JoinedRoomObject obj2 = new JoinedRoomObject(joinedRooms);

@@ -49,7 +49,6 @@ public class RoomActivity extends AppCompatActivity  {
     Button splitExepenseBtn;
     MaterialToolbar topBar;
     String receiverEmail = null, amount = null;
-
     private Fragment SplitFrag;
     FrameLayout frameLayout;
     RecyclerView recyclerView;
@@ -57,7 +56,7 @@ public class RoomActivity extends AppCompatActivity  {
     LinearLayoutManager linearLayout;
     SEULA_Object_For_Fire seula_object_for_fire;
     private EasyUpiPayment easyUpiPayment;
-    String upi = null;
+    String upi;
     private ArrayList<SEULA_Object_For_Fire> requestData = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -170,17 +169,13 @@ public class RoomActivity extends AppCompatActivity  {
                 Log.e("data","response "+data.getStringExtra("response"));
                 String responseArr[] = data.getStringExtra("response").split("&");
                 Calendar cal = Calendar.getInstance();
-                PassBookObject obj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE)+" "+cal.get(Calendar.AM_PM),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,amount,responseArr[1]);
-                db.collection("Rooms").document(receiverEmail).collection("PassBook").add(obj);
-                Toast.makeText(this, "response : "+responseArr[1], Toast.LENGTH_LONG).show();
+                PassBookObject obj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,amount,responseArr[1]);
+                db.collection("Users").document(receiverEmail).collection("PassBook").add(obj);
+                Toast.makeText(this, "response : "+receiverEmail, Toast.LENGTH_LONG).show();
             }
         }
     }
-
-
     public void changeFragment(){
         frameLayout.setVisibility(View.GONE);
     }
-
-
 }
