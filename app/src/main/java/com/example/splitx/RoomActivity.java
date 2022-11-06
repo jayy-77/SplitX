@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,15 +25,18 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,7 +55,7 @@ public class RoomActivity extends AppCompatActivity  {
     public String roomName, roomId;
     Button splitExepenseBtn;
     MaterialToolbar topBar;
-    String receiverEmail = null, amount = null, splitNote = null;
+    String receiverEmail = null, amount = null, splitNote = null, rUpi = null;
     private Fragment SplitFrag;
     FrameLayout frameLayout;
     RecyclerView recyclerView;
@@ -177,49 +181,71 @@ public class RoomActivity extends AppCompatActivity  {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==1421)
-        {
-            if (resultCode==RESULT_OK)
-            {
+        if (requestCode==1421) {
+            if (resultCode==RESULT_OK){
                         db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).get()
                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                               upi = documentSnapshot.get("upi").toString();
+                                assert data != null;
+                                String responseArr[] = data.getStringExtra("response").split("&");
+//                if(responseArr[1].equals("responseCode=0")){
+                                db.collection("Rooms").document(roomId).collection("SplitRequests").document(splitNote).get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                SEULA_Object_For_Fire o = documentSnapshot.toObject(SEULA_Object_For_Fire.class);
+                                                Map<String,String> otherDetailsMap = new HashMap<>();
+                                                Map<String, List<String>> userData = new HashMap<>();
+                                                Map<String, List<String>> userData2 = new HashMap<>();
+                                                 List<String> paidList = new ArrayList<>();
+                                                 List<String> UnPaidList = new ArrayList<>();
+                                                otherDetailsMap.putAll(o.getOtherDetailsMap());
+                                                userData.putAll(o.getUserData());
+                                                 paidList.addAll(userData.get("Paid"));
+                                                 UnPaidList.addAll(userData.get("UnPaid"));
+                                                userData.put("Paid",paidList);
+                                                userData.put("UnPaid",UnPaidList);
+                                                int cnt = Integer.parseInt(otherDetailsMap.get("PaidNumber"));
+                                                cnt+=1;
+                                                otherDetailsMap.replace("PaidNumber",String.valueOf(cnt));
+                                                paidList.add(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                                for(int i=0;i<UnPaidList.size();i++){
+                                                    if(UnPaidList.get(i).equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                                        UnPaidList.remove(i);
+                                                    }
+                                                }
+
+                                                db.collection("Rooms").document(roomId).collection("SplitRequests").document(splitNote).update("Paid", FieldValue.arrayUnion(userData2)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Toast.makeText(getApplicationContext(), "S", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(getApplicationContext(), "F", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                ;
+                                                db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).update("otherDetailsMap",otherDetailsMap);
+                                                Calendar cal = Calendar.getInstance();
+                                                PassBookObject recievierObj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,rUpi,amount,responseArr[1],1);
+                                                PassBookObject senderobj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,rUpi,amount,responseArr[1],0);
+                                                db.collection("Users").document(receiverEmail).collection("PassBook").add(recievierObj);
+                                                db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("PassBook").add(senderobj);
+                                            }
+                                        });
                             }
                         }) ;
-                assert data != null;
-                Log.e("data","response "+data.getStringExtra("response"));
-                String responseArr[] = data.getStringExtra("response").split("&");
-                if(responseArr[1].equals("responseCode=0")){
-                    db.collection("Rooms").document(roomId).collection("SplitRequests").document(splitNote).get()
-                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    SEULA_Object_For_Fire o = documentSnapshot.toObject(SEULA_Object_For_Fire.class);
-                                    Map<String,String> otherDetailsMap = new HashMap<>();
-                                    Map<String, List<String>> userData = new HashMap<>();
 
-                                    otherDetailsMap.putAll(o.getOtherDetailsMap());
-                                    userData.putAll(o.getUserData());
-                                    int cnt = Integer.parseInt(otherDetailsMap.get("PaidNumber"));
-                                    cnt+=1;
-                                    otherDetailsMap.replace("PaidNumber",String.valueOf(cnt));
-                                    userData.get("Unpaid").remove(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                                    userData.get("Paid").add(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
-                                }
-                            });
+//                }else{
+//
+//                }
 
-                }else{
-
-                }
-                Calendar cal = Calendar.getInstance();
-                PassBookObject recievierObj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,amount,responseArr[1],1);
-                PassBookObject senderobj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,amount,responseArr[1],1);
-                db.collection("Users").document(receiverEmail).collection("PassBook").add(recievierObj);
-                db.collection("User").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("PassBook").add(senderobj);
-                Toast.makeText(this, "response : "+receiverEmail, Toast.LENGTH_LONG).show();
             }
         }
     }

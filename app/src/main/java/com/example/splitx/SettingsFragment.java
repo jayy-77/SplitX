@@ -8,12 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,9 +24,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     EditTextPreference editTextPreference;
+            Preference  name,email;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,11 +36,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Button btn = new Button(getActivity().getApplicationContext());
         Button save = new Button(getActivity().getApplicationContext());
         editTextPreference = (EditTextPreference)  getPreferenceManager().findPreference("upi");
+        name =  (Preference)  getPreferenceManager().findPreference("userName");
+        email = (Preference)   getPreferenceManager().findPreference("UserEmail");
         db.collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                        editTextPreference.setText(documentSnapshot.get("upi").toString());
+                       email.setTitle(documentSnapshot.get("email").toString());
+                       name.setTitle(documentSnapshot.get("name").toString());
+
                     }
                 });
 

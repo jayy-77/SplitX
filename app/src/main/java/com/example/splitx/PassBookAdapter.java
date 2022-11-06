@@ -1,24 +1,17 @@
 package com.example.splitx;
 
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PassBookAdapter extends RecyclerView.Adapter<PassBookAdapter.ViewHolder>{
     private ArrayList<PassBookObject> passBookData = new ArrayList<>();
@@ -42,9 +35,22 @@ public class PassBookAdapter extends RecyclerView.Adapter<PassBookAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.sentDateTime.setText(passBookData.get(position).getTime()+" | "+passBookData.get(position).getDate());
 
-        holder.senderUpi.setText(passBookData.get(position).getUpi());
-
+        if(passBookData.get(position).getStatus().equals("responseCode=0")){
+            holder.status.setText("Success");
+            holder.status.setTextColor(Color.GREEN);
+        }else{
+            holder.status.setTextColor(Color.RED);
+            holder.status.setText("Failure");
+        }
+        if(passBookData.get(position).getFlag() == 1){
+            holder.amount.setText("+ ₹"+passBookData.get(position).getAmount());
+            holder.senderUpi.setText(passBookData.get(position).getUpi());
+        }else{
+            holder.amount.setText("- ₹"+passBookData.get(position).getAmount());
+            holder.senderUpi.setText(passBookData.get(position).getUpi2());
+        }
     }
 
 
@@ -54,15 +60,13 @@ public class PassBookAdapter extends RecyclerView.Adapter<PassBookAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView sentDate, sentTime, amount, status, senderName, senderUpi;
+        TextView sentDateTime, amount, status, senderUpi;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            sentDate = itemView.findViewById(R.id.sentDate);
-            sentTime = itemView.findViewById(R.id.sentaTime);
+            sentDateTime = itemView.findViewById(R.id.sentDateTime);
             amount = itemView.findViewById(R.id.paidAmount);
             status = itemView.findViewById(R.id.status);
-            senderName = itemView.findViewById(R.id.senderName);
             senderUpi = itemView.findViewById(R.id.senderUpi);
         }
     }

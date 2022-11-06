@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                                                         .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                             @Override
                                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                               int tmp = (Integer) documentSnapshot.get("numberOfpeople");
+                                                               int tmp = Integer.parseInt(String.valueOf(documentSnapshot.get("numberOfpeople")));
                                                                 db.collection("Rooms").document(roomIdEt.getText().toString()).update("numberOfpeople",String.valueOf(tmp+1));
                                                             }
                                                         });

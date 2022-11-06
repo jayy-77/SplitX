@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -37,6 +38,7 @@ public class SplitRequestAdapter extends RecyclerView.Adapter<SplitRequestAdapte
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String,String> otherdeTails = new HashMap<>();
     String rUpi, rName;
+     int flag = -1;
 
     public SplitRequestAdapter(ArrayList<SEULA_Object_For_Fire> requestData, Context context){
         this.requestData = requestData;
@@ -67,6 +69,7 @@ public class SplitRequestAdapter extends RecyclerView.Adapter<SplitRequestAdapte
                                 rName = documentSnapshot.get("name").toString();
                                 try {
                                     ((RoomActivity) context).launchUPI(rUpi, rName, requestData.get(position).otherDetailsMap.get("SplitNote"), requestData.get(position).otherDetailsMap.get("Amount"));
+                                    ((RoomActivity)context).rUpi = rUpi;
                                 }catch (Exception e){
 
                                 }
@@ -76,14 +79,29 @@ public class SplitRequestAdapter extends RecyclerView.Adapter<SplitRequestAdapte
         });
         for(int i=0;i<requestData.get(position).userData.get("Paid").size();i++){
             if(requestData.get(position).userData.get("Paid").get(i).equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
-                holder.paidUnpaid.setText("Paid | Date");
-                holder.pay.setText("Paid | Date");
-                holder.pay.setEnabled(false);
-                holder.paidUnpaid.setVisibility(View.INVISIBLE);
-                break;
-            }else{
-                holder.paidUnpaid.setText("Unpaid | "+requestData.get(position).otherDetailsMap.get("Date"));
+                flag = 0;
             }
+        }
+        for(int i=0;i<requestData.get(position).userData.get("UnPaid").size();i++){
+            if(requestData.get(position).userData.get("UnPaid").get(i).equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                flag = 1;
+            }
+        }
+        if(flag == 0){
+            holder.paidUnpaid.setText("Paid");
+            holder.pay.setText("Paid");
+            holder.pay.setEnabled(false);
+            holder.paidUnpaid.setVisibility(View.INVISIBLE);
+            Toast.makeText(context, "Paid", Toast.LENGTH_SHORT).show();
+        }else if(flag == 1){
+            holder.paidUnpaid.setText("Unpaid | "+requestData.get(position).otherDetailsMap.get("Date"));
+            holder.pay.setEnabled(true);
+            Toast.makeText(context, "UnPaid", Toast.LENGTH_SHORT).show();
+        }else{
+            holder.pay.setText("No need to pay");
+            holder.pay.setEnabled(false);
+            Toast.makeText(context, "No need", Toast.LENGTH_SHORT).show();
+            holder.paidUnpaid.setVisibility(View.INVISIBLE);
         }
          totalSize = requestData.get(position).userData.get("Paid").size()+requestData.get(position).userData.get("UnPaid").size();
          paid = requestData.get(position).userData.get("Paid").size();
