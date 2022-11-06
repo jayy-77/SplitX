@@ -1,5 +1,7 @@
 package com.example.splitx;
 
+import com.google.firebase.firestore.Exclude;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,7 @@ public class SEULA_Object_For_Fire {
     public SEULA_Object_For_Fire(){
 
     }
-    public SEULA_Object_For_Fire( Map<String,String> otherDetailsMap ,Map<String, List<String>> userData ){
+    public SEULA_Object_For_Fire(Map<String,String> otherDetailsMap ,Map<String, List<String>> userData ){
         this.otherDetailsMap = otherDetailsMap;
         this.userData = userData;
     }

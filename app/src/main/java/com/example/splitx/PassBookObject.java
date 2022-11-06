@@ -2,20 +2,27 @@ package com.example.splitx;
 
 public class PassBookObject {
     String date, time, name, upi, amount, status;
-
+    int flag;
     public PassBookObject(){
 
     }
-    public PassBookObject(String date, String time, String name, String upi, String amount,String status){
+    public PassBookObject(String date, String time, String name, String upi, String amount,String status,int flag){
         this.date = date;
         this.time = time;
         this.name = name;
         this.upi = upi;
         this.amount = amount;
         this.status = status;
+        this.flag = flag;
     }
     public String getDate() {
         return date;
+    }
+    public int getFlag(){
+        return flag;
+    }
+    public void setFlag(int flag){
+        this.flag = flag;
     }
 
     public void setDate(String date) {

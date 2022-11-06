@@ -36,6 +36,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import dev.shreyaspatil.easyupipayment.EasyUpiPayment;
@@ -48,15 +51,17 @@ public class RoomActivity extends AppCompatActivity  {
     public String roomName, roomId;
     Button splitExepenseBtn;
     MaterialToolbar topBar;
-    String receiverEmail = null, amount = null;
+    String receiverEmail = null, amount = null, splitNote = null;
     private Fragment SplitFrag;
     FrameLayout frameLayout;
     RecyclerView recyclerView;
+    Fragment settlementFrag;
     SplitRequestAdapter splitRequestAdapter;
     LinearLayoutManager linearLayout;
     SEULA_Object_For_Fire seula_object_for_fire;
     private EasyUpiPayment easyUpiPayment;
     String upi;
+
     private ArrayList<SEULA_Object_For_Fire> requestData = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -72,7 +77,7 @@ public class RoomActivity extends AppCompatActivity  {
 
         frameLayout  =findViewById(R.id.fragContainer);
         splitExepenseBtn = findViewById(R.id.splitExpenseBtn);
-        topBar = findViewById(R.id.topAppBarRoomActivity);
+        topBar = findViewById(R.id.topAppBarRoomActivity2);
         topBar.setTitle(roomName);
         topBar.setSubtitle(roomId);
 
@@ -94,6 +99,24 @@ public class RoomActivity extends AppCompatActivity  {
                         recyclerView.setAdapter(splitRequestAdapter);
                     }
                 });
+        topBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+     topBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+         @Override
+         public boolean onMenuItemClick(MenuItem item) {
+             switch (item.getItemId()) {
+                 case R.id.more:
+                     Toast.makeText(getApplicationContext(), "Test", Toast.LENGTH_SHORT).show();
+                     return true;
+             }
+             return false;
+
+         }
+     });
 //        MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getApplicationContext())
 ////                .setTitle("")
         topBar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -168,9 +191,34 @@ public class RoomActivity extends AppCompatActivity  {
                 assert data != null;
                 Log.e("data","response "+data.getStringExtra("response"));
                 String responseArr[] = data.getStringExtra("response").split("&");
+                if(responseArr[1].equals("responseCode=0")){
+                    db.collection("Rooms").document(roomId).collection("SplitRequests").document(splitNote).get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    SEULA_Object_For_Fire o = documentSnapshot.toObject(SEULA_Object_For_Fire.class);
+                                    Map<String,String> otherDetailsMap = new HashMap<>();
+                                    Map<String, List<String>> userData = new HashMap<>();
+
+                                    otherDetailsMap.putAll(o.getOtherDetailsMap());
+                                    userData.putAll(o.getUserData());
+                                    int cnt = Integer.parseInt(otherDetailsMap.get("PaidNumber"));
+                                    cnt+=1;
+                                    otherDetailsMap.replace("PaidNumber",String.valueOf(cnt));
+                                    userData.get("Unpaid").remove(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                    userData.get("Paid").add(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+                                }
+                            });
+
+                }else{
+
+                }
                 Calendar cal = Calendar.getInstance();
-                PassBookObject obj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,amount,responseArr[1]);
-                db.collection("Users").document(receiverEmail).collection("PassBook").add(obj);
+                PassBookObject recievierObj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,amount,responseArr[1],1);
+                PassBookObject senderobj = new PassBookObject(cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH),cal.get(Calendar.HOUR)+":"+cal.get(Calendar.MINUTE),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),upi,amount,responseArr[1],1);
+                db.collection("Users").document(receiverEmail).collection("PassBook").add(recievierObj);
+                db.collection("User").document(FirebaseAuth.getInstance().getCurrentUser().getEmail()).collection("PassBook").add(senderobj);
                 Toast.makeText(this, "response : "+receiverEmail, Toast.LENGTH_LONG).show();
             }
         }

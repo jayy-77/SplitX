@@ -16,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -32,7 +34,9 @@ public class SplitRequestAdapter extends RecyclerView.Adapter<SplitRequestAdapte
     private ArrayList<SEULA_Object_For_Fire> requestData = new ArrayList<>();
     Context context;
     int paid, totalSize;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String,String> otherdeTails = new HashMap<>();
+    String rUpi, rName;
 
     public SplitRequestAdapter(ArrayList<SEULA_Object_For_Fire> requestData, Context context){
         this.requestData = requestData;
@@ -52,14 +56,22 @@ public class SplitRequestAdapter extends RecyclerView.Adapter<SplitRequestAdapte
         holder.pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    ((RoomActivity)context).receiverEmail = requestData.get(position).getOtherDetailsMap().get("SplitSender");
-                    ((RoomActivity)context).amount = requestData.get(position).getOtherDetailsMap().get("Amount");
+                ((RoomActivity)context).receiverEmail = requestData.get(position).getOtherDetailsMap().get("SplitSender");
+                ((RoomActivity)context).amount = requestData.get(position).getOtherDetailsMap().get("Amount");
+                ((RoomActivity)context).splitNote = requestData.get(position).getOtherDetailsMap().get("SplitNote");
+                db.collection("Users").document(requestData.get(position).otherDetailsMap.get("SplitSender")).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                rUpi = documentSnapshot.get("upi").toString();
+                                rName = documentSnapshot.get("name").toString();
+                                try {
+                                    ((RoomActivity) context).launchUPI(rUpi, rName, requestData.get(position).otherDetailsMap.get("SplitNote"), requestData.get(position).otherDetailsMap.get("Amount"));
+                                }catch (Exception e){
 
-                    ((RoomActivity)context).launchUPI("jmpatel7358@okhdfcbank","Jay Prajapati",requestData.get(position).otherDetailsMap.get("SplitNote"),requestData.get(position).otherDetailsMap.get("Amount"));
-                } catch (AppNotFoundException e) {
-                    e.printStackTrace();
-                }
+                                }
+                            }
+                        });
             }
         });
         for(int i=0;i<requestData.get(position).userData.get("Paid").size();i++){
