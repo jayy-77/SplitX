@@ -42,7 +42,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                       editTextPreference.setText(documentSnapshot.get("upi").toString());
+                       editTextPreference.setTitle(documentSnapshot.get("upi").toString());
                        email.setTitle(documentSnapshot.get("email").toString());
                        name.setTitle(documentSnapshot.get("name").toString());
 

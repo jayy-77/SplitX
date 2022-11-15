@@ -5,7 +5,7 @@
             app:icon="@drawable/upicolor"
             app:key="upi"
             app:title="Your UPI Id"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="false"/>
     <Preference
         app:icon="@drawable/ic_baseline_person_24"
         app:key="userName"

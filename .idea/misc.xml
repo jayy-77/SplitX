@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1675925925925926" />
+        <entry key="app/src/main/res/drawable/bg_gradient.xml" value="0.2145" />
         <entry key="app/src/main/res/drawable/checkbox_background.xml" value="0.373" />
         <entry key="app/src/main/res/drawable/custom_checkbox.xml" value="0.373" />
         <entry key="app/src/main/res/drawable/disabled_hackdshake.xml" value="0.256" />
@@ -22,9 +23,11 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.335" />
         <entry key="app/src/main/res/drawable/ic_outline_home_24.xml" value="0.218" />
         <entry key="app/src/main/res/drawable/room_et_drawable.xml" value="0.291" />
+        <entry key="app/src/main/res/drawable/splash_background.xml" value="0.2145" />
         <entry key="app/src/main/res/layout/activity_google_authentication.xml" value="0.67" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_room.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.5" />
         <entry key="app/src/main/res/layout/card_item.xml" value="0.20869565217391303" />
         <entry key="app/src/main/res/layout/custom_pref.xml" value="1.5789473684210527" />
         <entry key="app/src/main/res/layout/fragment_cards.xml" value="0.3170289855072464" />
