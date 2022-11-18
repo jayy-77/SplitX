@@ -24,7 +24,7 @@
         <entry key="app/src/main/res/drawable/ic_outline_home_24.xml" value="0.218" />
         <entry key="app/src/main/res/drawable/room_et_drawable.xml" value="0.291" />
         <entry key="app/src/main/res/drawable/splash_background.xml" value="0.2145" />
-        <entry key="app/src/main/res/layout/activity_google_authentication.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/activity_google_authentication.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_room.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.5" />

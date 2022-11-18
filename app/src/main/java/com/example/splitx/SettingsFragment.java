@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -22,9 +21,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     EditTextPreference editTextPreference;
@@ -35,6 +32,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         LinearLayout v = (LinearLayout) super.onCreateView(inflater, container, savedInstanceState);
         Button btn = new Button(getActivity().getApplicationContext());
         Button save = new Button(getActivity().getApplicationContext());
+        ImageView upi = new androidx.appcompat.widget.AppCompatImageView(getActivity().getApplicationContext()) {
+
+        };
         editTextPreference = (EditTextPreference)  getPreferenceManager().findPreference("upi");
         name =  (Preference)  getPreferenceManager().findPreference("userName");
         email = (Preference)   getPreferenceManager().findPreference("UserEmail");
@@ -51,8 +51,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         btn.setText("Log out");
         btn.setTextColor(Color.RED);
+        upi.setImageResource(R.drawable.upicolor);
+
+        v.addView(upi);
         v.addView(btn);
         v.addView(save);
+
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
